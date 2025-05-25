@@ -37,7 +37,7 @@
             position: fixed;
             bottom: 90px;
             z-index: 1000;
-            width: 380px;
+            min-width: 350px;
             height: 580px;
             background: var(--chat-color-surface);
             border-radius: var(--chat-radius-lg);
