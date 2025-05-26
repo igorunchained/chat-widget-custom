@@ -1,4 +1,4 @@
-// Interactive Chat Widget for n8n - Modified Version (No Name/Email Fields)
+// Interactive Chat Widget for n8n - Modified Version (No Token Waste)
 (function() {
     // Initialize widget only once
     if (window.N8nChatWidgetLoaded) return;
@@ -14,17 +14,17 @@
     const widgetStyles = document.createElement('style');
     widgetStyles.textContent = `
         .chat-assist-widget {
-            --chat-color-primary: var(--chat-widget-primary, #10b981);
-            --chat-color-secondary: var(--chat-widget-secondary, #059669);
-            --chat-color-tertiary: var(--chat-widget-tertiary, #047857);
-            --chat-color-light: var(--chat-widget-light, #d1fae5);
+            --chat-color-primary: var(--chat-widget-primary, #ca8eb9);
+            --chat-color-secondary: var(--chat-widget-secondary, #be7bab);
+            --chat-color-tertiary: var(--chat-widget-tertiary, #b26fa1);
+            --chat-color-light: var(--chat-widget-light, #f3e8f0);
             --chat-color-surface: var(--chat-widget-surface, #ffffff);
             --chat-color-text: var(--chat-widget-text, #1f2937);
             --chat-color-text-light: var(--chat-widget-text-light, #6b7280);
             --chat-color-border: var(--chat-widget-border, #e5e7eb);
-            --chat-shadow-sm: 0 1px 3px rgba(16, 185, 129, 0.1);
-            --chat-shadow-md: 0 4px 6px rgba(16, 185, 129, 0.15);
-            --chat-shadow-lg: 0 10px 15px rgba(16, 185, 129, 0.2);
+            --chat-shadow-sm: 0 1px 3px rgba(202, 142, 185, 0.1);
+            --chat-shadow-md: 0 4px 6px rgba(202, 142, 185, 0.15);
+            --chat-shadow-lg: 0 10px 15px rgba(202, 142, 185, 0.2);
             --chat-radius-sm: 8px;
             --chat-radius-md: 12px;
             --chat-radius-lg: 20px;
@@ -115,64 +115,10 @@
             transform: translateY(-50%) scale(1.1);
         }
 
-        .chat-assist-widget .chat-welcome {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 24px;
-            text-align: center;
-            width: 100%;
-            max-width: 320px;
-        }
-
-        .chat-assist-widget .chat-welcome-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--chat-color-text);
-            margin-bottom: 24px;
-            line-height: 1.3;
-        }
-
-        .chat-assist-widget .chat-start-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            padding: 14px 20px;
-            background: linear-gradient(135deg, var(--chat-color-primary) 0%, var(--chat-color-secondary) 100%);
-            color: white;
-            border: none;
-            border-radius: var(--chat-radius-md);
-            cursor: pointer;
-            font-size: 15px;
-            transition: var(--chat-transition);
-            font-weight: 600;
-            font-family: inherit;
-            margin-bottom: 16px;
-            box-shadow: var(--chat-shadow-md);
-        }
-
-        .chat-assist-widget .chat-start-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--chat-shadow-lg);
-        }
-
-        .chat-assist-widget .chat-response-time {
-            font-size: 14px;
-            color: var(--chat-color-text-light);
-            margin: 0;
-        }
-
         .chat-assist-widget .chat-body {
-            display: none;
+            display: flex;
             flex-direction: column;
             height: 100%;
-        }
-
-        .chat-assist-widget .chat-body.active {
-            display: flex;
         }
 
         .chat-assist-widget .chat-messages {
@@ -200,7 +146,7 @@
         }
 
         .chat-assist-widget .chat-messages::-webkit-scrollbar-thumb {
-            background-color: rgba(16, 185, 129, 0.3);
+            background-color: rgba(202, 142, 185, 0.3);
             border-radius: var(--chat-radius-full);
         }
 
@@ -220,7 +166,7 @@
             color: white;
             align-self: flex-end;
             text-align: right;
-            max-width: 60%; /* Smaller width for user messages */
+            max-width: 60%;
             border-bottom-right-radius: 4px;
             box-shadow: var(--chat-shadow-sm);
         }
@@ -230,10 +176,22 @@
             color: var(--chat-color-text);
             align-self: flex-start;
             text-align: left;
-            max-width: 75%; /* Keep larger width for bot messages */
+            max-width: 75%;
             border-bottom-left-radius: 4px;
             box-shadow: var(--chat-shadow-sm);
             border: 1px solid var(--chat-color-light);
+        }
+
+        .chat-assist-widget .chat-bubble.welcome-bubble {
+            background: linear-gradient(135deg, var(--chat-color-light) 0%, rgba(202, 142, 185, 0.1) 100%);
+            color: var(--chat-color-text);
+            align-self: flex-start;
+            text-align: left;
+            max-width: 85%;
+            border-bottom-left-radius: 4px;
+            box-shadow: var(--chat-shadow-sm);
+            border: 1px solid var(--chat-color-primary);
+            font-weight: 500;
         }
 
         /* Typing animation */
@@ -308,7 +266,7 @@
         .chat-assist-widget .chat-textarea:focus {
             outline: none;
             border-color: var(--chat-color-primary);
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+            box-shadow: 0 0 0 3px rgba(202, 142, 185, 0.2);
         }
 
         .chat-assist-widget .chat-textarea::placeholder {
@@ -455,7 +413,7 @@
         }
 
         .chat-assist-widget .chat-bubble code {
-            background: rgba(16, 185, 129, 0.1);
+            background: rgba(202, 142, 185, 0.1);
             padding: 2px 4px;
             border-radius: 4px;
             font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
@@ -464,7 +422,7 @@
         }
 
         .chat-assist-widget .chat-bubble pre {
-            background: rgba(16, 185, 129, 0.1);
+            background: rgba(202, 142, 185, 0.1);
             padding: 12px;
             border-radius: var(--chat-radius-sm);
             margin: 8px 0;
@@ -491,7 +449,7 @@
         branding: {
             logo: '',
             name: '',
-            welcomeText: '',
+            welcomeText: 'Witaj! Jestem tu, aby Ci pomóc z balonami i dekoracjami. Zadaj mi pytanie!',
             responseTimeText: '',
             poweredBy: {
                 text: 'Powered by unchained solutions',
@@ -499,26 +457,32 @@
             }
         },
         style: {
-            primaryColor: '#10b981', // Green
-            secondaryColor: '#059669', // Darker green
+            primaryColor: '#ca8eb9',
+            secondaryColor: '#be7bab',
             position: 'right',
             backgroundColor: '#ffffff',
             fontColor: '#1f2937'
         },
-        suggestedQuestions: [] // Default empty array for suggested questions
+        suggestedQuestions: [
+            'Jakie balony macie na 18 urodziny?',
+            'Ile kosztuje dostawa balonów?',
+            'Jak długo utrzymują się balony z helem?',
+            'Czy robicie balony personalizowane?'
+        ]
     };
 
     // Merge user settings with defaults
     const settings = window.ChatWidgetConfig ? 
         {
             webhook: { ...defaultSettings.webhook, ...window.ChatWidgetConfig.webhook },
-            branding: { ...defaultSettings.branding, ...window.ChatWidgetConfig.branding },
+            branding: { 
+                ...defaultSettings.branding, 
+                ...window.ChatWidgetConfig.branding,
+                welcomeText: window.ChatWidgetConfig.branding?.welcomeText || defaultSettings.branding.welcomeText
+            },
             style: { 
                 ...defaultSettings.style, 
-                ...window.ChatWidgetConfig.style,
-                // Force green colors if user provided purple
-                primaryColor: window.ChatWidgetConfig.style?.primaryColor === '#854fff' ? '#10b981' : (window.ChatWidgetConfig.style?.primaryColor || '#10b981'),
-                secondaryColor: window.ChatWidgetConfig.style?.secondaryColor === '#6b3fd4' ? '#059669' : (window.ChatWidgetConfig.style?.secondaryColor || '#059669')
+                ...window.ChatWidgetConfig.style
             },
             suggestedQuestions: window.ChatWidgetConfig.suggestedQuestions || defaultSettings.suggestedQuestions
         } : defaultSettings;
@@ -526,6 +490,7 @@
     // Session tracking
     let conversationId = '';
     let isWaitingForResponse = false;
+    let isFirstMessage = true; // Track if this is the first real message
 
     // Create widget DOM structure
     const widgetRoot = document.createElement('div');
@@ -542,7 +507,7 @@
     const chatWindow = document.createElement('div');
     chatWindow.className = `chat-window ${settings.style.position === 'left' ? 'left-side' : 'right-side'}`;
     
-    // Create header only (REMOVED WELCOME SCREEN)
+    // Create header
     const headerHTML = `
         <div class="chat-header">
             <img class="chat-header-logo" src="${settings.branding.logo}" alt="${settings.branding.name}">
@@ -551,7 +516,7 @@
         </div>
     `;
 
-    // Create chat interface without duplicating the header
+    // Create chat interface
     const chatInterfaceHTML = `
         <div class="chat-body">
             <div class="chat-messages"></div>
@@ -637,20 +602,45 @@
         return formattedText;
     }
 
-    // MODIFIED: Direct chat initialization on widget open
-    async function initializeChat() {
-        // Initialize conversation directly
-        conversationId = createSessionId();
+    // MODIFIED: Show welcome message without API call
+    function showWelcomeMessage() {
+        // Display static welcome message (no API call)
+        const welcomeMessage = document.createElement('div');
+        welcomeMessage.className = 'chat-bubble welcome-bubble';
+        welcomeMessage.innerHTML = formatMessage(settings.branding.welcomeText);
+        messagesContainer.appendChild(welcomeMessage);
         
-        // Show chat interface immediately
-        chatBody.classList.add('active');
+        // Add suggested questions if configured
+        if (settings.suggestedQuestions && Array.isArray(settings.suggestedQuestions) && settings.suggestedQuestions.length > 0) {
+            const suggestedQuestionsContainer = document.createElement('div');
+            suggestedQuestionsContainer.className = 'suggested-questions';
+            
+            settings.suggestedQuestions.forEach(question => {
+                const questionButton = document.createElement('button');
+                questionButton.className = 'suggested-question-btn';
+                questionButton.textContent = question;
+                questionButton.addEventListener('click', () => {
+                    submitMessage(question);
+                    // Remove the suggestions after clicking
+                    if (suggestedQuestionsContainer.parentNode) {
+                        suggestedQuestionsContainer.parentNode.removeChild(suggestedQuestionsContainer);
+                    }
+                });
+                suggestedQuestionsContainer.appendChild(questionButton);
+            });
+            
+            messagesContainer.appendChild(suggestedQuestionsContainer);
+        }
         
-        // Show typing indicator
-        const typingIndicator = createTypingIndicator();
-        messagesContainer.appendChild(typingIndicator);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
 
+    // MODIFIED: Initialize session only when first real message is sent
+    async function initializeSession() {
         try {
-            // First, load the session with anonymous user
+            conversationId = createSessionId();
+            
+            // Load session with anonymous user (no greeting message sent to API)
             const sessionData = [{
                 action: "loadPreviousSession",
                 sessionId: conversationId,
@@ -661,8 +651,7 @@
                 }
             }];
             
-            // Load session
-            const sessionResponse = await fetch(settings.webhook.url, {
+            await fetch(settings.webhook.url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -670,91 +659,23 @@
                 body: JSON.stringify(sessionData)
             });
             
-            const sessionResponseData = await sessionResponse.json();
-            
-            // Send initial greeting message
-            const greetingData = {
-                action: "sendMessage",
-                sessionId: conversationId,
-                route: settings.webhook.route,
-                chatInput: "Hello! I'm ready to help you.",
-                metadata: {
-                    userId: "anonymous_" + Date.now(),
-                    userName: "Anonymous User",
-                    isInitialGreeting: true
-                }
-            };
-            
-            // Send greeting
-            const greetingResponse = await fetch(settings.webhook.url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(greetingData)
-            });
-            
-            const greetingResponseData = await greetingResponse.json();
-            
-            // Remove typing indicator
-            messagesContainer.removeChild(typingIndicator);
-            
-            // Display initial bot message with proper formatting
-            const botMessage = document.createElement('div');
-            botMessage.className = 'chat-bubble bot-bubble';
-            const messageText = Array.isArray(greetingResponseData) ? 
-                greetingResponseData[0].output : greetingResponseData.output;
-            botMessage.innerHTML = formatMessage(messageText);
-            messagesContainer.appendChild(botMessage);
-            
-            // Add sample questions if configured
-            if (settings.suggestedQuestions && Array.isArray(settings.suggestedQuestions) && settings.suggestedQuestions.length > 0) {
-                const suggestedQuestionsContainer = document.createElement('div');
-                suggestedQuestionsContainer.className = 'suggested-questions';
-                
-                settings.suggestedQuestions.forEach(question => {
-                    const questionButton = document.createElement('button');
-                    questionButton.className = 'suggested-question-btn';
-                    questionButton.textContent = question;
-                    questionButton.addEventListener('click', () => {
-                        submitMessage(question);
-                        // Remove the suggestions after clicking
-                        if (suggestedQuestionsContainer.parentNode) {
-                            suggestedQuestionsContainer.parentNode.removeChild(suggestedQuestionsContainer);
-                        }
-                    });
-                    suggestedQuestionsContainer.appendChild(questionButton);
-                });
-                
-                messagesContainer.appendChild(suggestedQuestionsContainer);
-            }
-            
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         } catch (error) {
-            console.error('Chat initialization error:', error);
-            
-            // Remove typing indicator if it exists
-            const indicator = messagesContainer.querySelector('.typing-indicator');
-            if (indicator) {
-                messagesContainer.removeChild(indicator);
-            }
-            
-            // Show error message
-            const errorMessage = document.createElement('div');
-            errorMessage.className = 'chat-bubble bot-bubble';
-            errorMessage.textContent = "Sorry, I couldn't connect to the server. Please try again later.";
-            messagesContainer.appendChild(errorMessage);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            console.error('Session initialization error:', error);
         }
     }
 
-    // Send a message to the webhook
+    // MODIFIED: Send message to API only for real user messages
     async function submitMessage(messageText) {
         if (isWaitingForResponse) return;
         
         isWaitingForResponse = true;
         
-        // MODIFIED: Use anonymous user data
+        // Initialize session on first real message
+        if (isFirstMessage) {
+            await initializeSession();
+            isFirstMessage = false;
+        }
+        
         const requestData = {
             action: "sendMessage",
             sessionId: conversationId,
@@ -807,7 +728,7 @@
             // Show error message
             const errorMessage = document.createElement('div');
             errorMessage.className = 'chat-bubble bot-bubble';
-            errorMessage.textContent = "Sorry, I couldn't send your message. Please try again.";
+            errorMessage.textContent = "Przepraszam, nie mogłem wysłać Twojej wiadomości. Spróbuj ponownie.";
             messagesContainer.appendChild(errorMessage);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         } finally {
@@ -821,7 +742,7 @@
         messageTextarea.style.height = (messageTextarea.scrollHeight > 120 ? 120 : messageTextarea.scrollHeight) + 'px';
     }
 
-    // MODIFIED: Event listeners - auto-initialize chat when widget opens
+    // MODIFIED: Event listeners - show welcome message when widget opens (no API call)
     let chatInitialized = false;
     
     sendButton.addEventListener('click', () => {
@@ -850,10 +771,10 @@
     launchButton.addEventListener('click', () => {
         chatWindow.classList.toggle('visible');
         
-        // Initialize chat automatically when widget opens for the first time
+        // Show welcome message when widget opens for the first time (no API call)
         if (chatWindow.classList.contains('visible') && !chatInitialized) {
             chatInitialized = true;
-            initializeChat();
+            showWelcomeMessage();
         }
     });
 
@@ -865,5 +786,3 @@
         });
     });
 })();
-    
-    
