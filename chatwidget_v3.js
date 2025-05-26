@@ -635,47 +635,19 @@
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
-    // MODIFIED: Initialize session only when first real message is sent
-    async function initializeSession() {
-        try {
-            conversationId = createSessionId();
-            
-            // Load session with anonymous user (no greeting message sent to API)
-            const sessionData = [{
-                action: "loadPreviousSession",
-                sessionId: conversationId,
-                route: settings.webhook.route,
-                metadata: {
-                    userId: "anonymous_" + Date.now(),
-                    userName: "Anonymous User"
-                }
-            }];
-            
-            await fetch(settings.webhook.url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(sessionData)
-            });
-            
-        } catch (error) {
-            console.error('Session initialization error:', error);
-        }
-    }
-
-    // MODIFIED: Send message to API only for real user messages
+    // FIXED: Send message to API only for real user messages (original format)
     async function submitMessage(messageText) {
         if (isWaitingForResponse) return;
         
         isWaitingForResponse = true;
         
-        // Initialize session on first real message
+        // Initialize session ID on first real message
         if (isFirstMessage) {
-            await initializeSession();
+            conversationId = createSessionId();
             isFirstMessage = false;
         }
         
+        // Use original format that works with your n8n webhook
         const requestData = {
             action: "sendMessage",
             sessionId: conversationId,
